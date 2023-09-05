@@ -13,7 +13,7 @@ def ddl_to_replicate_command(ddl: str) -> str:
     """
     # TODO: allow specifying the replication sets
     # TODO: better escaping for the ddl command
-    return "pglogical.replicate_ddl_command('%s')" % ddl
+    return "SELECT pglogical.replicate_ddl_command('%s')" % ddl
 
 
 def make_func(ddl):

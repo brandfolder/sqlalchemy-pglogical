@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  primary: &logical
+    build: 
+      context: ./pg
+      args:
+        DOCKER_IMAGE: ${PG_DOCKER_IMAGE}
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_DB}
+    command:
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+  logical: 
+    <<: *logical
+  app:
+    build: 
+      context: ./app
+      args:
+        DOCKER_IMAGE: ${PYTHON_DOCKER_IMAGE}
+    volumes:
+      - ../:/app
