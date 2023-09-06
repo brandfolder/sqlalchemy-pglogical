@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  primary: 
+    build: 
+      context: ./pg
+      args:
+        DOCKER_IMAGE: ${PG_DOCKER_IMAGE}
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_DB}
+    command:
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+    ports:
+      - "5432:5432"

@@ -8,3 +8,5 @@ venv
 .pytest_cache
 *.pyc
 *.pyo 
+dist/*
+.nox
