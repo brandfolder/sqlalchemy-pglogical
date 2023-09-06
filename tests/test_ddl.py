@@ -8,17 +8,15 @@ def test_create_table_is_replicated():
     metadata = sa.MetaData()
     table = sa.Table("my_table", metadata, sa.Column("my_column", sa.Integer))
     create = sa.schema.CreateTable(table)
-    #compiler = DDLCompiler("postgresql", create)
+    # compiler = DDLCompiler("postgresql", create)
     compiled = create.compile(bind)
-    assert 'create' in compiled.string.lower()
-    assert compiled.string.startswith('pglogical.replicate_ddl_command(')
+    assert "create" in compiled.string.lower()
+    assert compiled.string.startswith("SELECT pglogical.replicate_ddl_command(")
 
 
 def test_all_subclasses_recursion():
-    last = type('a', (object,), {})
+    last = type("a", (object,), {})
     first = last
     for i in range(100):
-        last = type(f'a{i}', (last,), {} )
+        last = type(f"a{i}", (last,), {})
     assert len(sqlalchemy_pglogical.replicate_ddl.all_subclasses(first)) == 100
-
-

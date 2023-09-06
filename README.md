@@ -55,3 +55,21 @@ def visit_create_table(element, compiler, **kwargs) -> str:
 ```
 
 We use this to extend _all_ subclasses of `DDLElement` and wrap them in `pglogical.replicate_ddl_command`
+
+
+## Development
+
+Dependencies and packaging are managed with `poetry`. Get started with `poetry install --with=test`.
+
+There are two test suites: unit tests and integration tests. Unit tests live in [the tests directory](./tests/)
+and can be run with `nox` (if you don't have `nox`, install it with `pipx install nox` (if you don't have `pipx`,
+install it with `python3 -m pip install pipx-in-pipx`)).
+`nox` expects you to have several python versions installed (currently 3.8, 3.9, 3.10, and 3.11).
+I recommend installing those all with [`pyenv`](https://github.com/pyenv/pyenv#installation),
+then making them globally available with `pyenv global 3.8 3.9 3.10 3.11`
+
+The integration tests run in [the integrations directory](./integration/)
+and can be run via the [test.sh script](./integration/test.sh) in that directory. The integration tests require 
+a trio of docker containers, so they're not currently well-suited to running in CI. 
+
+Code is formatted with `black` - format with `black .`
