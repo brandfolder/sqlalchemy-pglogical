@@ -9,7 +9,6 @@ def test_create_table_is_replicated():
     metadata = sa.MetaData()
     table = sa.Table("my_table", metadata, sa.Column("my_column", sa.Integer))
     create = sa.schema.CreateTable(table)
-    # compiler = DDLCompiler("postgresql", create)
     compiled = create.compile(bind)
     assert "create" in compiled.string.lower()
     assert compiled.string.startswith("SELECT pglogical.replicate_ddl_command(")
