@@ -1,5 +1,5 @@
-ARG DOCKER_IMAGE
-FROM ${DOCKER_IMAGE}
+# dockerfile for pglogical container for integration tests
+FROM postgres:13.10-bullseye
 
 
 # we have to do a source install because pglogical isn't published for arm64
@@ -10,6 +10,4 @@ RUN apt update && \
     cd pglogical-REL2_4_2 && \
     make clean && make install
 
-
-COPY scripts /scripts
 COPY postgresql.conf /etc/postgresql/postgresql.conf

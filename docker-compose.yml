@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  primary: &logical
+  primary: 
     build: 
       context: ./pg
       args:
@@ -12,12 +12,5 @@ services:
     command:
       - "-c"
       - "config_file=/etc/postgresql/postgresql.conf"
-  logical: 
-    <<: *logical
-  app:
-    build: 
-      context: ./app
-      args:
-        DOCKER_IMAGE: ${PYTHON_DOCKER_IMAGE}
-    volumes:
-      - ../:/app
+    ports:
+      - "5432:5432"

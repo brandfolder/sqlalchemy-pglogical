@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.sql.compiler import DDLCompiler
+
 import sqlalchemy_pglogical
 
 
