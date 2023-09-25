@@ -11,7 +11,10 @@ def test_create_table_is_replicated():
     create = sa.schema.CreateTable(table)
     compiled = create.compile(bind)
     assert "create" in compiled.string.lower()
-    assert compiled.string.startswith("SELECT pglogical.replicate_ddl_command(")
+    assert compiled.string.startswith(
+        "SELECT pglogical.replicate_ddl_command($sqlalchemypglogical$"
+    )
+    assert compiled.string.endswith("$sqlalchemypglogical$)")
 
 
 def test_all_subclasses_recursion():
