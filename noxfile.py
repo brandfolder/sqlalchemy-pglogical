@@ -26,6 +26,7 @@ def integration(session, sqlalchemy):
     session.install("psycopg2-binary")
     session.install(".")
     session.install(f"sqlalchemy=={sqlalchemy}")
+    session.install("alembic")
     session.install("pytest")
 
     for _ in range(30):

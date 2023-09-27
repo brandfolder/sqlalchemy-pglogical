@@ -1,9 +1,18 @@
+import pathlib
 import time
 from contextlib import contextmanager
 
 import pytest
+from alembic import command
+from alembic.config import Config
+from alembic.context import EnvironmentContext
+from alembic.migration import MigrationContext
+from alembic.script import ScriptDirectory
 from sqlalchemy import Column, Integer, String, create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
+
+# from alembic.operations import Operations
+
 
 
 @contextmanager
@@ -134,3 +143,14 @@ def test_creates_tables(clean_primary, clean_secondary):
                 break
             time.sleep(0.5)
     assert table is not None
+
+
+def test_create_with_alembic(clean_primary, clean_secondary):
+    config = Config(pathlib.Path(__file__).parent / "alembic.ini")
+    command.upgrade(config, "b67a71ccf11e")
+
+
+def test_add_column_with_alembic(clean_primary, clean_secondary):
+    config = Config(pathlib.Path(__file__).parent / "alembic.ini")
+    command.upgrade(config, "b67a71ccf11e")
+    command.upgrade(config, "4b361a7c7bf3")
