@@ -10,6 +10,8 @@ from typing import Sequence, Union
 import sqlalchemy as sa
 from alembic import op
 
+from sqlalchemy_pglogical import replicate_alembic
+
 # revision identifiers, used by Alembic.
 revision: str = "4b361a7c7bf3"
 down_revision: Union[str, None] = "b67a71ccf11e"
@@ -19,7 +21,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.add_column(
-        "users",
+        "account",
         sa.Column("new_column", sa.String(), server_default=""),
         schema="public",
     )
