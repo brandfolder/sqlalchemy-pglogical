@@ -1,16 +1,16 @@
 import pathlib
 import time
 
+import pytest
 from alembic import command
 from alembic.config import Config
-from flaky import flaky
 from sqlalchemy import Column, Integer, String, create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 wait_lsn = text("select pglogical.wait_slot_confirm_lsn(NULL, NULL)")
 
 
-@flaky(max_runs=5, min_passes=2)
+@pytest.mark.flaky(max_runs=3)
 def test_create_with_alembic(clean_primary, clean_secondary):
     primary_engine = create_engine(clean_primary)
     PrimarySession = sessionmaker(primary_engine)
@@ -44,7 +44,7 @@ def test_create_with_alembic(clean_primary, clean_secondary):
     assert logical_table is not None
 
 
-@flaky(max_runs=5, min_passes=2)
+@pytest.mark.flaky(max_runs=3)
 def test_add_column_with_alembic(clean_primary, clean_secondary):
     config = Config(pathlib.Path(__file__).parent / "alembic.ini")
     command.upgrade(config, "4b361a7c7bf3")
