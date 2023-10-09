@@ -78,6 +78,6 @@ The integration tests live in `tests/integration` - they stand up a docker conta
 create two databases within the postgres instance, and create a `pglogical` subscription between them. 
 Run the integration tests with `nox -s integration`
 
-Some of the integration tests run alembic directly. These test should remain ordered top to bottom so
+Some of the integration tests run alembic directly. These tests should remain ordered top to bottom so
 failures make more sense. To add a new revision, change directories to `tests/integration`, then run 
 `alembic revision -m "some helpful descriptor"`.
