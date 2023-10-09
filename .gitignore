@@ -10,3 +10,4 @@ venv
 *.pyo 
 dist/*
 .nox
+.vscode
