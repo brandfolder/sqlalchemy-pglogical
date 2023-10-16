@@ -56,7 +56,6 @@ def integration(session, sqlalchemy, alembic):
 
 @nox.session
 def lint(session):
-    session.install("black")
-    session.install("isort")
+    session.run("poetry", "install", "--no-root", "--only=dev")
     session.run("black", ".")
     session.run("isort", ".")
