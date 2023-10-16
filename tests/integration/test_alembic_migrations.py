@@ -1,5 +1,4 @@
 import pathlib
-import time
 
 import pytest
 from alembic import command
