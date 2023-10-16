@@ -5,7 +5,7 @@ import nox
 nox.options.sessions = ["unit", "lint"]
 
 
-@nox.session(python=["3.8", "3.9", "3.10", "3.11"])
+@nox.session(python=["3.8", "3.9", "3.10", "3.11", "3.12"])
 @nox.parametrize("sqlalchemy", ["1.4", "2.0"])
 def unit(session, sqlalchemy):
     session.install("psycopg2-binary")
@@ -16,9 +16,10 @@ def unit(session, sqlalchemy):
     session.run("pytest", "tests/unit/")
 
 
-@nox.session(python=["3.8", "3.9", "3.10", "3.11"])
+@nox.session(python=["3.8", "3.9", "3.10", "3.11", "3.12"])
 @nox.parametrize("sqlalchemy", ["1.4", "2.0"])
-def integration(session, sqlalchemy):
+@nox.parametrize("alembic", ["1.9", "1.10", "1.11", "1.12"])
+def integration(session, sqlalchemy, alembic):
     quiet = False
     if session.posargs and "quiet" in session.posargs:
         quiet = True
@@ -28,7 +29,7 @@ def integration(session, sqlalchemy):
     session.install("psycopg2-binary", silent=quiet)
     session.install(".", silent=quiet)
     session.install(f"sqlalchemy=={sqlalchemy}", silent=quiet)
-    session.install("alembic", silent=quiet)
+    session.install(f"alembic=={alembic}", silent=quiet)
     session.install("pytest", silent=quiet)
     session.install("flaky", silent=quiet)
 
