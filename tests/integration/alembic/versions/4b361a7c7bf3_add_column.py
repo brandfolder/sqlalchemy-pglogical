@@ -28,4 +28,4 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_column("users")
+    op.drop_column("account", "new_column", schema="public")

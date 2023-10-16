@@ -7,10 +7,12 @@ nox.options.sessions = ["unit", "lint"]
 
 @nox.session(python=["3.8", "3.9", "3.10", "3.11", "3.12"])
 @nox.parametrize("sqlalchemy", ["1.4", "2.0"])
-def unit(session, sqlalchemy):
+@nox.parametrize("alembic", ["1.9", "1.10", "1.11", "1.12"])
+def unit(session, sqlalchemy, alembic):
     session.install("psycopg2-binary")
     session.install(".")
     session.install(f"sqlalchemy=={sqlalchemy}")
+    session.install(f"alembic=={alembic}")
     session.install("pytest")
 
     session.run("pytest", "tests/unit/")
@@ -54,7 +56,6 @@ def integration(session, sqlalchemy, alembic):
 
 @nox.session
 def lint(session):
-    session.install("black")
-    session.install("isort")
+    session.run("poetry", "install", "--no-root", "--only=dev", external=True)
     session.run("black", ".")
     session.run("isort", ".")
