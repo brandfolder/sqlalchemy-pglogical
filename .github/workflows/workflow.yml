@@ -1,5 +1,4 @@
 name: Unit Tests
-run-name: asdf
 "on": 
   - push
 jobs:
