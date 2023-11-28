@@ -5,6 +5,9 @@ jobs:
   test:
     uses: ./.github/workflows/unit-test.yml
   build:
+    name: Build distributables
+    needs:
+      - test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -44,3 +47,15 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
+
+  publish-to-pypi:
+    name: Publish Python 🐍 distribution 📦 to PyPI
+    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    needs:
+    - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/sqlalchemy_pglogical  # Replace <package-name> with your PyPI project name
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
