@@ -3,6 +3,12 @@
 `sqlalchemy-pglogical` is a sqlalchemy extension to automatically send DDL through 
 `pglogical.replicate_ddl_command`
 
+## Who's this for?
+
+`sqlalchemy-pglogical` may be for you if:
+- you use `sqlalchemy` and/or `alembic` for DDL, and 
+- you use `pglogical` for logical replication
+
 ## How do I use it?
 
 There are two keys to using `sqlalchemy-pglogical`:
@@ -38,6 +44,18 @@ from sqlalchemy import create_engine
 import sqlalchemy_pglogical
 ```
 
+## Known limitations
+
+### Only one publication
+
+We currently assume you're using the `default_ddl` publication and only publish to that publication.
+
+### CREATE INDEX CONCURRENTLY
+
+`pglogical` can't propagate `{CREATE, DROP} INDEX CONCURRENTLY` statements. `sqlachemy-pglogical` makes
+no attempt to catch the `CONCURRENTLY` keyword in `INDEX` statements, so they will likely fail.
+
+
 ## How does it work?
 
 DDL operations are represented in SQLAlchemy 1.x with a subclass of `DDLElement`. To
@@ -56,28 +74,3 @@ def visit_create_table(element, compiler, **kwargs) -> str:
 
 We use this to extend _all_ subclasses of `DDLElement` and wrap them in `pglogical.replicate_ddl_command`
 
-
-## Development
-
-Dependencies and packaging are managed with `poetry`. Get started with `poetry install --with=test`.
-
-There are two test suites: unit tests and integration tests. 
-Unit tests and linters can be run with `nox` (if you don't have `nox`, install it with `pipx install nox` (if you don't have `pipx`,
-install it with `python3 -m pip install pipx-in-pipx`)).
-`nox` expects you to have several python versions installed (currently 3.8, 3.9, 3.10, and 3.11).
-I recommend installing those all with [`pyenv`](https://github.com/pyenv/pyenv#installation),
-then making them globally available with `pyenv global 3.8 3.9 3.10 3.11 3.12`
-
-The integration tests are available via `nox` but are skipped by default because they're very slow. You can
-run them with `nox -s integration`. The integration tests stand up a docker container using docker compose, 
-and manage two databases in that container. 
-
-### Integration tests
-
-The integration tests live in `tests/integration` - they stand up a docker container to serve postgres from,
-create two databases within the postgres instance, and create a `pglogical` subscription between them. 
-Run the integration tests with `nox -s integration`
-
-Some of the integration tests run alembic directly. These tests should remain ordered top to bottom so
-failures make more sense. To add a new revision, change directories to `tests/integration`, then run 
-`alembic revision -m "some helpful descriptor"`.
