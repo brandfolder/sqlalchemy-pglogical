@@ -63,6 +63,13 @@ def lint(session):
     session.run("isort", ".")
 
 
+@nox.session
+def ci_lint(session):
+    session.run("poetry", "install", "--no-root", "--only=dev", external=True)
+    session.run("black", "--check", ".")
+    session.run("isort", "--check", ".")
+
+
 @nox.session(venv_backend=None)
 def release(session):
     CHANGELOG = "CHANGELOG.md"
