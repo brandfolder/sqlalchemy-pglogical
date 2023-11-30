@@ -2,12 +2,25 @@ name: build
 "on": 
   - push
 jobs:
-  test:
-    uses: ./.github/workflows/unit-test.yml
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wntrblm/nox@2023.04.22
+      - uses: Gr1N/setup-poetry@v8
+      - run: nox -s lint
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wntrblm/nox@2023.04.22
+      - uses: Gr1N/setup-poetry@v8
+      - run: nox -s unit
   build:
     name: Build distributables
     needs:
-      - test
+      - unit
+      - lint
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
