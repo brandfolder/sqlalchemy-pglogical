@@ -66,7 +66,10 @@ def lint(session):
 def release(session):
     CHANGELOG = "CHANGELOG.md"
     PYPROJECT = "pyproject.toml"
-    target_version_or_bump = session.posargs[0]
+    if session.posargs:
+        target_version_or_bump = session.posargs[0]
+    else:
+        session.error("You need to include a bump rule (e.g, 'major', 'minor', or 'patch') or a target version (e.g, '0.2.1')")
     
     # make sure we don't have work to commit
     try:
