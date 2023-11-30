@@ -81,12 +81,13 @@ def release(session):
     # make sure we're pushing a unique version
     tags = session.run("git", "ls-remote", "--tags", "git@github.com:brandfolder/sqlalchemy-pglogical.git", external=True, silent=True)
     versions = tags.split("\n")
-    new_version = session.run("poetry", "version", "--short", target_version_or_bump)
+    new_version = session.run("poetry", "version", "--short", target_version_or_bump, external=True, silent=True)
+    new_version = new_version.strip()
     if new_version in versions:
         session.error(f"New Version {new_version} already exists in remote tags.")
     
     # confirm the user knows what we're doing
-    confirm = input(f"You're about to release version {new_version}. Are you sure? [y/N]")
+    confirm = input(f"You're about to release version {new_version}. Are you sure? [y/N]: ")
     if confirm.lower().strip() != "y":
         session.error(f"Aborting because you said no!")
 
@@ -94,7 +95,7 @@ def release(session):
     EDITOR = os.environ.get('EDITOR', 'vim')
     initial_message = f'''# {new_version}\n\n<!-- replace this line with your release notes in markdown format -->'''
     
-    with tempfile.NamedTemporaryFile() as tf:
+    with tempfile.NamedTemporaryFile(mode="w+t") as tf:
         tf.write(initial_message)
         tf.flush()
         session.run(EDITOR, tf.name)
@@ -104,12 +105,13 @@ def release(session):
 
     with open(CHANGELOG, "r") as f:
         old_changelog = f.read()
-    with open(CHANGELOG, "t") as f:
+    with open(CHANGELOG, "w+t") as f:
         f.write(release_notes)
         f.write(old_changelog)
 
     session.run("git", "add", PYPROJECT, CHANGELOG)
     session.run("git", "commit", "-m", f"Bumping version to {new_version}")
+    session.run("git", "tag", "-a", "-m", release_notes, new_version)
 
     print("Release created! Check the most recent commit to confirm everything looks good, then push the release tag to trigger a build")
     

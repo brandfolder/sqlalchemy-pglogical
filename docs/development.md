@@ -29,10 +29,10 @@ failures make more sense. To add a new revision, change directories to `tests/in
 ## Cutting releases
 
 To cut a new release:
-1. Ensure you've updated the version in [pyproject.toml](../pyproject.toml)
-1. Create an annotated tag on the release commit. Use the tag to indicate
-   the version number, and the annotation to describe the changes included in the release
-1. Push the tag to GitHub
+1. run `nox -s -- <version or bump rule>` where `version` is the new version id (e.g, 0.1.1) or bump rule is 
+   a bump rule as recognized by `poetry` (e.g. patch, minor, or major)
+1. push the commit + tag it makes
+1. approve the pypi publish job on Github
 
 
 ## How does it work?
