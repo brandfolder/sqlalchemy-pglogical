@@ -18,7 +18,7 @@ jobs:
     - uses: Gr1N/setup-poetry@v8
     - name: Make version unique for non-pypi builds
       if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
-      run: poetry version $(poetry version -s)+$(git log -1 --pretty=format:%h) 
+      run: poetry version $(poetry version -s).dev${{ github.run_id }}
     - name: Build the distribution
       run: poetry build
     - name: Store the distribution packages
