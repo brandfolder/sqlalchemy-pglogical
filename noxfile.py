@@ -114,8 +114,3 @@ def release(session):
     session.run("git", "tag", "-a", "-m", release_notes, new_version)
 
     print("Release created! Check the most recent commit to confirm everything looks good, then push the release tag to trigger a build")
-    
-    # open file for release notes
-    # put notes into changelog
-    # tag and annotate with notes
-
