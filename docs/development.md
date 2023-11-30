@@ -28,7 +28,17 @@ failures make more sense. To add a new revision, change directories to `tests/in
 
 ## Cutting releases
 
+There's a nox target for creating a release. It will 
+
+- bump the version in the necessary files,
+- ask you to provide release notes
+- update the changelog
+- commit these updates
+- tag the commit, annotating the tag with the release notes 
+
 To cut a new release:
+
+1. run the tests again, just to be sure
 1. run `nox -s -- <version or bump rule>` where `version` is the new version id (e.g, 0.1.1) or bump rule is 
    a bump rule as recognized by `poetry` (e.g. patch, minor, or major)
 1. push the commit + tag it makes
