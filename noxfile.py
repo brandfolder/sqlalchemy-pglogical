@@ -1,4 +1,5 @@
-import tempfile, os
+import os
+import tempfile
 import time
 
 import nox
@@ -69,39 +70,68 @@ def release(session):
     if session.posargs:
         target_version_or_bump = session.posargs[0]
     else:
-        session.error("You need to include a bump rule (e.g, 'major', 'minor', or 'patch') or a target version (e.g, '0.2.1')")
-    
+        session.error(
+            "You need to include a bump rule (e.g, 'major', 'minor', or 'patch') or a target version (e.g, '0.2.1')"
+        )
+
     # make sure we don't have work to commit
     try:
         session.run("git", "diff-files", "--quiet", external=True, silent=True)
-        session.run("git", "diff-index", "--quiet", "--cached", "HEAD", "--", external=True, silent=True)
+        session.run(
+            "git",
+            "diff-index",
+            "--quiet",
+            "--cached",
+            "HEAD",
+            "--",
+            external=True,
+            silent=True,
+        )
     except Exception as e:
-        session.error("Working tree dirty - stash, commit, or revert local changes to continue")
-        
+        session.error(
+            "Working tree dirty - stash, commit, or revert local changes to continue"
+        )
+
     # make sure we're pushing a unique version
-    tags = session.run("git", "ls-remote", "--tags", "git@github.com:brandfolder/sqlalchemy-pglogical.git", external=True, silent=True)
+    tags = session.run(
+        "git",
+        "ls-remote",
+        "--tags",
+        "git@github.com:brandfolder/sqlalchemy-pglogical.git",
+        external=True,
+        silent=True,
+    )
     versions = tags.split("\n")
-    new_version = session.run("poetry", "version", "--short", target_version_or_bump, external=True, silent=True)
+    new_version = session.run(
+        "poetry",
+        "version",
+        "--short",
+        target_version_or_bump,
+        external=True,
+        silent=True,
+    )
     new_version = new_version.strip()
     if new_version in versions:
         session.error(f"New Version {new_version} already exists in remote tags.")
-    
+
     # confirm the user knows what we're doing
-    confirm = input(f"You're about to release version {new_version}. Are you sure? [y/N]: ")
+    confirm = input(
+        f"You're about to release version {new_version}. Are you sure? [y/N]: "
+    )
     if confirm.lower().strip() != "y":
         session.error(f"Aborting because you said no!")
 
     # get the release notes
-    EDITOR = os.environ.get('EDITOR', 'vim')
-    initial_message = f'''# {new_version}\n\n<!-- replace this line with your release notes in markdown format -->'''
-    
+    EDITOR = os.environ.get("EDITOR", "vim")
+    initial_message = f"""# {new_version}\n\n<!-- replace this line with your release notes in markdown format -->"""
+
     with tempfile.NamedTemporaryFile(mode="w+t") as tf:
         tf.write(initial_message)
         tf.flush()
         session.run(EDITOR, tf.name)
-    
+
         with open(tf.name, "r+t") as rf:
-          release_notes = rf.read()
+            release_notes = rf.read()
 
     with open(CHANGELOG, "r") as f:
         old_changelog = f.read()
@@ -113,4 +143,6 @@ def release(session):
     session.run("git", "commit", "-m", f"Bumping version to {new_version}")
     session.run("git", "tag", "-a", "-m", release_notes, new_version)
 
-    print("Release created! Check the most recent commit to confirm everything looks good, then push the release tag to trigger a build")
+    print(
+        "Release created! Check the most recent commit to confirm everything looks good, then push the release tag to trigger a build"
+    )
