@@ -23,12 +23,10 @@ def test_creates_tables(clean_primary, clean_secondary):
     logical_engine = create_engine(clean_secondary)
     LogicalSession = sessionmaker(logical_engine)
 
-    table_query = text(
-        """
+    table_query = text("""
     SELECT table_schema||'.'||table_name AS full_rel_name 
     FROM information_schema.tables 
-    WHERE table_schema = 'public'"""
-    )
+    WHERE table_schema = 'public'""")
 
     for Session in (PrimarySession, LogicalSession):
         # clean the database
