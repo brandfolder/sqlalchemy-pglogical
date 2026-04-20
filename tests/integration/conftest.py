@@ -28,9 +28,7 @@ def create_database_with_node(db_name):
     MyDBSession = sessionmaker(mydb_engine)
 
     with transactionless_session(MyDBSession) as session:
-        session.execute(
-            text(
-                f"""
+        session.execute(text(f"""
         SELECT 
             pg_terminate_backend(pid) 
         FROM 
@@ -40,9 +38,7 @@ def create_database_with_node(db_name):
             pid <> pg_backend_pid()
             -- don't kill the connections to other databases
             AND datname = '{db_name}'
-    """
-            )
-        )
+    """))
         session.execute(text(f'DROP DATABASE IF EXISTS "{db_name}"'))
         session.execute(text(f'CREATE DATABASE "{db_name}"'))
 
@@ -52,14 +48,10 @@ def create_database_with_node(db_name):
     with transactionless_session(Session) as session:
         session.execute(text("CREATE EXTENSION IF NOT EXISTS pglogical"))
     with transactionless_session(Session) as session:
-        session.execute(
-            text(
-                f"""SELECT pglogical.create_node(
+        session.execute(text(f"""SELECT pglogical.create_node(
                         node_name := '{db_name}_node',
                         dsn := '{dsn}'
-                        )"""
-            )
-        )
+                        )"""))
 
     return connection_string
 
@@ -90,14 +82,10 @@ def clean_secondary():
     Session = sessionmaker(engine)
 
     with transactionless_session(Session) as session:
-        session.execute(
-            text(
-                """SELECT pglogical.create_subscription(
+        session.execute(text("""SELECT pglogical.create_subscription(
         subscription_name := 'secondary_node',
         provider_dsn := 'host=localhost port=5432 dbname=primary user=me password=veryinsecure'
-        );"""
-            )
-        )
+        );"""))
     yield connection_string
     with transactionless_session(Session) as session:
         session.execute(

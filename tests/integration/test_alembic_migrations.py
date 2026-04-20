@@ -30,12 +30,10 @@ def test_create_with_alembic(clean_primary, clean_secondary):
     config = Config(pathlib.Path(__file__).parent / "alembic.ini")
     command.upgrade(config, "b67a71ccf11e")
     # confirm the tables got made
-    table_query = text(
-        """
+    table_query = text("""
     SELECT table_schema||'.'||table_name AS full_rel_name 
     FROM information_schema.tables 
-    WHERE table_schema = 'public'"""
-    )
+    WHERE table_schema = 'public'""")
 
     with PrimarySession() as primary_session:
         primary_session.execute(wait_lsn)
@@ -55,15 +53,13 @@ def test_add_column_with_alembic(clean_primary, clean_secondary):
     logical_engine = create_engine(clean_secondary)
     LogicalSession = sessionmaker(logical_engine)
 
-    column_query = text(
-        """SELECT
+    column_query = text("""SELECT
                     column_name
                 FROM
                     information_schema.columns
                 WHERE
                     table_name = 'account'
-                    and column_name = 'new_column';"""
-    )
+                    and column_name = 'new_column';""")
 
     with PrimarySession() as primary_session:
         primary_session.execute(wait_lsn)
@@ -81,15 +77,13 @@ def test_drop_column_with_alembic(clean_primary, clean_secondary):
     logical_engine = create_engine(clean_secondary)
     LogicalSession = sessionmaker(logical_engine)
 
-    column_query = text(
-        """SELECT
+    column_query = text("""SELECT
                     column_name
                 FROM
                     information_schema.columns
                 WHERE
                     table_name = 'account'
-                    and column_name = 'new_column';"""
-    )
+                    and column_name = 'new_column';""")
 
     logical_column = wait_for_query_truthiness(LogicalSession, column_query)
     assert logical_column is not None
@@ -109,14 +103,12 @@ def test_add_and_drop_index(clean_primary, clean_secondary):
     logical_engine = create_engine(clean_secondary)
     LogicalSession = sessionmaker(logical_engine)
 
-    index_query = text(
-        """SELECT
+    index_query = text("""SELECT
                     indexname
                 FROM
                     pg_indexes
                 WHERE
-                    indexname = 'idx_account_name';"""
-    )
+                    indexname = 'idx_account_name';""")
 
     logical_index = wait_for_query_truthiness(LogicalSession, index_query)
     assert logical_index is not None
@@ -134,14 +126,12 @@ def test_add_and_drop_primary_key(clean_primary, clean_secondary):
     logical_engine = create_engine(clean_secondary)
     LogicalSession = sessionmaker(logical_engine)
 
-    index_query = text(
-        """SELECT a.attname
+    index_query = text("""SELECT a.attname
                 FROM   pg_index i
                 JOIN   pg_attribute a ON a.attrelid = i.indrelid
                                      AND a.attnum = ANY(i.indkey)
                 WHERE  i.indrelid = 'new_table'::regclass
-                AND    i.indisprimary;"""
-    )
+                AND    i.indisprimary;""")
 
     logical_index = wait_for_query_truthiness(LogicalSession, index_query)
     assert logical_index is not None
@@ -156,12 +146,10 @@ def test_add_and_drop_unique_constraint(clean_primary, clean_secondary):
     logical_engine = create_engine(clean_secondary)
     LogicalSession = sessionmaker(logical_engine)
 
-    constraint_query = text(
-        """SELECT constraint_name 
+    constraint_query = text("""SELECT constraint_name 
         FROM information_schema.key_column_usage 
         WHERE table_name = 'account' 
-        AND constraint_name = 'account_name_unique';"""
-    )
+        AND constraint_name = 'account_name_unique';""")
 
     logical_constraint = wait_for_query_truthiness(LogicalSession, constraint_query)
     assert logical_constraint is not None
