@@ -56,14 +56,14 @@ def integration(session, sqlalchemy, alembic):
     session.run("pytest", "tests/integration/", silent=quiet)
 
 
-@nox.session(python="3.10")
+@nox.session(python=["3.10", "3.11", "3.12"])
 def lint(session):
     session.run("poetry", "install", "--no-root", "--only=dev", external=True)
     session.run("black", ".")
     session.run("isort", ".")
 
 
-@nox.session(python="3.10")
+@nox.session(python=["3.10", "3.11", "3.12"])
 def ci_lint(session):
     session.run("poetry", "install", "--no-root", "--only=dev", external=True)
     session.run("black", "--check", ".")
