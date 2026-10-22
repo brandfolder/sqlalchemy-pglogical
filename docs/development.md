@@ -8,9 +8,10 @@ There are two test suites: unit tests and integration tests.
 Unit tests and linters can be run with `nox` (if you don't have `nox`, install
 it with `pipx install nox` (if you don't have `pipx`, install it with
 `python3 -m pip install pipx-in-pipx`)).
-`nox` expects you to have several python versions installed (currently 3.8, 3.9, 3.10, and 3.11).
+`nox` expects you to have several python versions installed (currently 3.10 and 3.11; lint also uses 3.12).
+Python 3.8 and 3.9 are not available on the Ubuntu 26.04 GitHub Actions runner.
 I recommend installing those all with [`pyenv`](https://github.com/pyenv/pyenv#installation),
-then making them globally available with `pyenv global 3.8 3.9 3.10 3.11`
+then making them globally available with `pyenv global 3.10 3.11 3.12`
 
 The integration tests are available via `nox` but are skipped by default because they're very slow. You can
 run them with `nox -s integration`. The integration tests stand up a docker container using docker compose, 
