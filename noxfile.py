@@ -7,7 +7,7 @@ import nox
 nox.options.sessions = ["unit", "lint"]
 
 
-@nox.session(python=["3.8", "3.9", "3.10", "3.11"])
+@nox.session(python=["3.9", "3.10", "3.11"])
 @nox.parametrize("sqlalchemy", ["1.4", "2.0"])
 @nox.parametrize("alembic", ["1.9", "1.10", "1.11", "1.12"])
 def unit(session, sqlalchemy, alembic):
@@ -20,7 +20,7 @@ def unit(session, sqlalchemy, alembic):
     session.run("pytest", "tests/unit/")
 
 
-@nox.session(python=["3.8", "3.9", "3.10", "3.11"])
+@nox.session(python=["3.9", "3.10", "3.11"])
 @nox.parametrize("sqlalchemy", ["1.4", "2.0"])
 @nox.parametrize("alembic", ["1.9", "1.10", "1.11", "1.12"])
 def integration(session, sqlalchemy, alembic):
